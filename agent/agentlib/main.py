@@ -4,6 +4,7 @@
 
 
 import json
+import requests
 import time
 from subprocess import Popen, PIPE
 
@@ -14,6 +15,7 @@ class Agent:
     self.output_file = '/tmp/agent_output'
     self.splitter = 'PID USER'
     self.configurator = self.get_config(conf_path)
+    self.postbin = 'curl -H 'X-Status: Awesome' https://postb.in/1574714140718-6299986722879'
 
   def get_config(self, conf_path):
     result = {}
@@ -52,6 +54,16 @@ class Agent:
     cmd_out = self.shell_command(cmd)
     if cmd_out:
       result = self.parse_output()
+      self.upload_results(result)
+
+  def upload_results(self, value):
+    url = 'https://postb.in/1574714140718-6299986722879'
+    headers = {'Content-Type': 'application/json'}
+    result = requsts.post(url, headers=headers, data={'top': value}
+    if result:
+      print(f'goto: {url}')
+    else:
+      print('failed to upload')
 
   def runner(self):
     """actual entry point."""
