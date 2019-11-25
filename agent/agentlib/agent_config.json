@@ -1,0 +1,9 @@
+{
+  'version': 1,
+  'config': 
+   {
+     'time_interval': 5,
+     'regex': ''
+   },
+  'destination': 'all'
+}        
