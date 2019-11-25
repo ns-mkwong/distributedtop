@@ -3,17 +3,29 @@
 """simple script to get info from 'top' linux command."""
 
 
+import json
+import time
 from subprocess import Popen, PIPE
 
 
 class Agent:
 
-  def __init__(self):
+  def __init__(self, conf_path):
     self.output_file = '/tmp/agent_output'
     self.splitter = 'PID USER'
+    self.configurator = self.get_config(conf_path)
+
+  def get_config(self, conf_path):
+    result = {}
+    with open(conf_path) af f:
+    try:
+      result = json.loads(f.read())
+    except:
+      print('BAD FORMAT')
+    return result
 
   def shell_command(self, cmd):
-    """method to execute linux command in the shell""
+    """method to execute linux command in the shell"""
     try:
       cmd_run = Popen(cmd, stderr=PIPE, stdout=PIPE, shell=True)
       out, err = cmd_run.communicate()
@@ -41,10 +53,18 @@ class Agent:
     if cmd_out:
       result = self.parse_output()
 
-
-
+  def runner(self):
+    """actual entry point."""
+    try:
+      time_cycle = self.configurator['config']['time_interval']
+    except:
+      raise(f'BAD CONFIG:\n{self.configurator}')
+    while True:
+      self.runner()
+      time.sleep(time_cycle)
 
 def main():
-    print("hello world")
-
+  conf_path = '/etc/agent/agent_config.json'
+  a = Agent(conf_path)
+  a.runner()
 
